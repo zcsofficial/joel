@@ -203,6 +203,7 @@
             if (value.length > 2) {
                 try {
                     const response = await fetch(`http://localhost:5000/api/search?q=${value}`);
+                    if (!response.ok) throw new Error(`Search failed: ${response.status}`);
                     const results = await response.json();
                     suggestionsDiv.innerHTML = results.length > 0
                         ? results.map(r => `<div class="p-3 hover:bg-gray-100 cursor-pointer">${r.title}</div>`).join('')
@@ -210,6 +211,8 @@
                     suggestionsDiv.classList.remove('hidden');
                 } catch (error) {
                     console.error('Search error:', error);
+                    suggestionsDiv.innerHTML = '<div class="p-3 text-red-500">Error loading suggestions</div>';
+                    suggestionsDiv.classList.remove('hidden');
                 }
             } else {
                 suggestionsDiv.classList.add('hidden');
@@ -261,12 +264,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message })
                 });
+                if (!response.ok) throw new Error(`Chat failed: ${response.status}`);
                 const data = await response.json();
                 typingMessage.remove();
                 addMessage(data.reply);
             } catch (error) {
                 typingMessage.remove();
-                addMessage('Sorry, something went wrong. Try again!');
+                addMessage(`Error: Couldn’t connect to the server. Is it running? (${error.message})`);
                 console.error('Chat error:', error);
             }
         }
