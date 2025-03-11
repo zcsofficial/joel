@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalAI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4F46E5',
+                        secondary: '#6366F1'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        .chat-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .chat-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .chat-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <header class="bg-white shadow-sm fixed w-full z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-['Pacifico'] text-primary">LegalAI</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-700 hover:text-primary">Home</a>
+                    <a href="#" class="text-gray-700 hover:text-primary">About</a>
+                    <a href="#" class="text-gray-700 hover:text-primary">Services</a>
+                    <a href="#" class="text-gray-700 hover:text-primary">Resources</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-20 pb-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Your Legal AI Assistant</h1>
+                <p class="text-lg text-gray-600">Get instant answers to your legal questions about student rights and regulations in India</p>
+            </div>
+
+            <div class="relative max-w-3xl mx-auto mb-16">
+                <div class="flex items-center bg-white rounded-lg shadow-sm border border-gray-200">
+                    <input type="text" id="search" placeholder="Search student-related laws and regulations..." class="w-full px-6 py-4 text-gray-700 focus:outline-none rounded-lg">
+                    <button class="px-6 py-4 text-gray-500 hover:text-primary">
+                        <i class="ri-search-line text-xl"></i>
+                    </button>
+                </div>
+                <div id="searchSuggestions" class="hidden absolute w-full bg-white mt-2 rounded-lg shadow-lg border border-gray-200 z-10">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                    <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-4">
+                        <i class="ri-graduation-cap-line text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Academic Rights</h3>
+                    <p class="text-gray-600">Learn about your rights regarding education and academic policies in India.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                    <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-4">
+                        <i class="ri-bank-line text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Fee Regulations</h3>
+                    <p class="text-gray-600">Understand laws about fee refunds and financial rights as a student.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
+                    <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-4">
+                        <i class="ri-shield-line text-2xl text-primary"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold mb-2">Safety Rights</h3>
+                    <p class="text-gray-600">Know your rights against ragging and harassment in institutions.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="chatbot" class="fixed bottom-6 right-6 z-50">
+        <button id="chatToggle" class="w-16 h-16 bg-primary rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
+            <i class="ri-message-3-line text-2xl text-white"></i>
+        </button>
+
+        <div id="chatWindow" class="hidden absolute bottom-20 right-0 w-96 bg-white rounded-lg shadow-xl border border-gray-200">
+            <div class="p-4 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold">Legal Assistant</h3>
+                    <button id="closeChat" class="text-gray-500 hover:text-gray-700">
+                        <i class="ri-close-line text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="chatMessages" class="p-4 h-96 overflow-y-auto chat-container space-y-4">
+                <div class="flex items-start">
+                    <div class="bg-gray-100 rounded-lg p-3 max-w-[80%]">
+                        <p class="text-gray-700">Hi! I'm your Legal Assistant for Indian student laws. How can I help you today?</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center gap-2">
+                    <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-primary">
+                    <button id="sendMessage" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                        <i class="ri-send-plane-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-white border-t border-gray-200">
+        <div class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">About</h4>
+                    <p class="text-gray-600">LegalAI Assistant helps Indian students understand their legal rights and obligations through AI-powered assistance.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-primary">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-primary">Blog</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary">FAQs</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-primary">Support</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Connect</h4>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-600 hover:text-primary">
+                            <i class="ri-twitter-fill text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-primary">
+                            <i class="ri-facebook-fill text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-600 hover:text-primary">
+                            <i class="ri-linkedin-fill text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-200 text-center">
+                <p class="text-gray-600">© 2025 LegalAI Assistant. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const searchInput = document.getElementById('search');
+        const suggestionsDiv = document.getElementById('searchSuggestions');
+        const chatToggle = document.getElementById('chatToggle');
+        const chatWindow = document.getElementById('chatWindow');
+        const closeChat = document.getElementById('closeChat');
+        const messageInput = document.getElementById('messageInput');
+        const sendMessage = document.getElementById('sendMessage');
+        const chatMessages = document.getElementById('chatMessages');
+
+        // Search functionality
+        searchInput.addEventListener('input', async (e) => {
+            const value = e.target.value.toLowerCase();
+            if (value.length > 2) {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/search?q=${value}`);
+                    const results = await response.json();
+                    suggestionsDiv.innerHTML = results.length > 0
+                        ? results.map(r => `<div class="p-3 hover:bg-gray-100 cursor-pointer">${r.title}</div>`).join('')
+                        : '<div class="p-3 text-gray-500">No results found</div>';
+                    suggestionsDiv.classList.remove('hidden');
+                } catch (error) {
+                    console.error('Search error:', error);
+                }
+            } else {
+                suggestionsDiv.classList.add('hidden');
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                suggestionsDiv.classList.add('hidden');
+            }
+        });
+
+        // Chatbot toggle
+        chatToggle.addEventListener('click', () => {
+            chatWindow.classList.toggle('hidden');
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatWindow.classList.add('hidden');
+        });
+
+        // Add message to chat
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex items-start ' + (isUser ? 'justify-end' : '');
+            messageDiv.innerHTML = `
+                <div class="${isUser ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'} rounded-lg p-3 max-w-[80%]">
+                    <p>${message}</p>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Send message to backend
+        async function handleSendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+
+            addMessage('<i class="text-gray-500">Typing...</i>');
+            const typingMessage = chatMessages.lastElementChild;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                typingMessage.remove();
+                addMessage(data.reply);
+            } catch (error) {
+                typingMessage.remove();
+                addMessage('Sorry, something went wrong. Try again!');
+                console.error('Chat error:', error);
+            }
+        }
+
+        sendMessage.addEventListener('click', handleSendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSendMessage();
+        });
+    </script>
+</body>
+</html>

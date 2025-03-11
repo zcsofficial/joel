@@ -1,0 +1,32 @@
+[
+    {
+        "title": "Right to Education Act (RTE), 2009",
+        "description": "Ensures free and compulsory education for children aged 6-14 under Article 21A of the Indian Constitution.",
+        "keywords": ["education", "free", "compulsory", "school", "rte"]
+    },
+    {
+        "title": "University Grants Commission (UGC) Regulations, 1956",
+        "description": "Regulates higher education standards, including student rights, degree recognition, and institutional policies.",
+        "keywords": ["university", "higher education", "student rights", "ugc", "college"]
+    },
+    {
+        "title": "National Education Policy (NEP) 2020",
+        "description": "Aims to reform education with focus on student assessment, vocational training, and equitable access.",
+        "keywords": ["education policy", "assessment", "reform", "nep", "training"]
+    },
+    {
+        "title": "UGC Regulations on Curbing the Menace of Ragging, 2009",
+        "description": "Prohibits ragging in educational institutions with penalties like suspension or imprisonment.",
+        "keywords": ["ragging", "harassment", "student safety", "anti-ragging", "discipline"]
+    },
+    {
+        "title": "Consumer Protection Act, 2019 (Education Services)",
+        "description": "Protects students from unfair fee practices or misleading promises by educational institutions.",
+        "keywords": ["consumer rights", "education", "fees", "unfair practices", "refund"]
+    },
+    {
+        "title": "Juvenile Justice (Care and Protection of Children) Act, 2015",
+        "description": "Provides protection and rehabilitation for students under 18 facing legal or social issues.",
+        "keywords": ["juvenile", "protection", "student safety", "minor", "rehabilitation"]
+    }
+]
